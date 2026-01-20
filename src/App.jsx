@@ -1,5 +1,5 @@
 import {
-  createBrowserRouter,
+  createHashRouter,
   Route,
   createRoutesFromElements,
   RouterProvider,
@@ -9,7 +9,7 @@ import RootLayout from "./layouts/RootLayout";
 import Articles, { articlesLoader } from "./pages/articles/Articles";
 
 function App() {
-  const router = createBrowserRouter(
+  const router = createHashRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Articles />} loader={articlesLoader} />
@@ -18,9 +18,6 @@ function App() {
         <Route path='new-post' element={} /> */}
       </Route>,
     ),
-    {
-      basename: "/4.13-NewBlog",
-    }
   );
 
   return <RouterProvider router={router} />;
