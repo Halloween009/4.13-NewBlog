@@ -58,7 +58,7 @@ h3 {
 
 .profile {
   display: flex;
-  margin-left: 20px;
+  margin: 20px;
   justify-content: flex-start;
 }
 .author-img {
