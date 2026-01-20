@@ -18,6 +18,9 @@ function App() {
         <Route path='new-post' element={} /> */}
       </Route>,
     ),
+    {
+      basename: "/4.13-NewBlog",
+    }
   );
 
   return <RouterProvider router={router} />;
