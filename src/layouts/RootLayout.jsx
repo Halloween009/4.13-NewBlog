@@ -3,26 +3,49 @@ import { NavLink, Outlet } from "react-router-dom";
 import penIcon from "../assets/pen.svg";
 import settingsIcon from "../assets/settings.svg";
 import profileIcon from "../assets/profile.svg";
+import { useAuth } from "../context/AuthContext";
 
 function RootLayout() {
+  const { user, logout } = useAuth();
+
   return (
     <div className="root-layout">
       <header>
         <h1>Realworld blog</h1>
         <nav>
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/">
-            <img src={penIcon} alt="new-post" />
-            New Post
-          </NavLink>
-          <NavLink to="/">
-            <img src={settingsIcon} alt="settings" />
-            Settings
-          </NavLink>
-          <NavLink to="/">
-            <img src={profileIcon} alt="profile" />
-            Profile
-          </NavLink>
+          {user ? (
+            <>
+              <NavLink to="/">
+                <img src={penIcon} alt="new-post" />
+                New Post
+              </NavLink>
+              <NavLink to="/">
+                <img src={settingsIcon} alt="settings" />
+                Settings
+              </NavLink>
+              <NavLink to="/profile">
+                <img src={profileIcon} alt="profile" />
+                {user.username}
+              </NavLink>
+              <button onClick={logout} className="logout">
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/sign-up">
+                <img src={penIcon} alt="new-post" />
+                New Post
+              </NavLink>
+              <NavLink to="sign-up/">
+                <img src={settingsIcon} alt="settings" />
+                Settings
+              </NavLink>
+              <NavLink to="/sign-in">Sign In</NavLink>
+              <NavLink to="/sign-up">Sign Up</NavLink>
+            </>
+          )}
         </nav>
       </header>
       <Outlet />

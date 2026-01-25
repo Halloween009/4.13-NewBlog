@@ -1,12 +1,39 @@
-import { useLoaderData, useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
+import heartIcon from "../../assets/favorite.svg";
+import defaultAvatar from "../../assets/woImage.png";
+import { getArticles, getTags } from "../../services/articleServices";
+import { useEffect, useState } from "react";
 
 function Articles() {
-  const { articles, articlesCount } = useLoaderData();
+  const [articles, setArticles] = useState({ articles: [], articlesCount: 0 });
+  const [tags, setTags] = useState([]);
   const [searchParams] = useSearchParams();
 
   const currentPage = parseInt(searchParams.get("page") || "1");
   const limit = 10;
-  const totalPages = Math.ceil(articlesCount / limit);
+  const totalPages = Math.ceil(articles.articlesCount / limit);
+
+  useEffect(() => {
+    const fetchArticlesData = async () => {
+      try {
+        const offset = (currentPage - 1) * limit;
+        const data = await getArticles({ limit, offset });
+        setArticles(data);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
+    const fetchTags = async () => {
+      try {
+        const data = await getTags();
+        setTags(data.tags || []);
+      } catch (error) {
+        console.log("Couldn't get tags. Error:", error);
+      }
+    };
+    fetchTags();
+    fetchArticlesData();
+  }, [currentPage]);
 
   return (
     <div className="main">
@@ -18,17 +45,63 @@ function Articles() {
       </div>
 
       <div className="articles">
-        {articles.map((article) => (
+        <div className="popular-tags">
+          <h2>Popular tags</h2>
+          <div className="tag-list">
+            {tags.map((tag, index) => (
+              <span key={index} className="tag">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+        {articles.articles.map((article) => (
           <div key={article.slug} className="article">
-            <div className="profile">
-              <img
-                src={article.author.image}
-                alt="author-img"
-                className="author-img"
-              />
-              <p className="username">{article.author.username}</p>
+            <div className="article-header">
+              <div className="article-profile">
+                <img
+                  src={article.author.image || defaultAvatar}
+                  alt="author-img"
+                  className="author-img"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = defaultAvatar;
+                  }}
+                />
+                <div className="author-info">
+                  <p className="username">{article.author.username}</p>
+                  <p className="created-at">
+                    {new Date(article.createdAt).toLocaleDateString("ru-RU", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+              </div>
+              <button className="likeBtn">
+                <img src={heartIcon} alt="heart-icon" className="heart" />
+                {article.favoritesCount}
+              </button>
             </div>
-            {article.title}
+            <div className="article-root">
+              <div className="article-main">
+                <Link to={article.slug} key={article.slug}>
+                  <h4>{article.title}</h4>
+                </Link>
+                <p className="article-body">{article.body}</p>
+                {article.tagList.filter((tag) => tag && tag.trim()).length >
+                  0 && (
+                  <div className="article-tags">
+                    {article.tagList?.map((tag, index) => (
+                      <span key={index} className="tag">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         ))}
         <div className="pagination">
@@ -70,21 +143,3 @@ function Articles() {
 }
 
 export default Articles;
-
-//Articles loader
-
-export const articlesLoader = async ({ request }) => {
-  const url = new URL(request.url);
-  const page = parseInt(url.searchParams.get("page") || "1");
-  const limit = 10;
-  const offset = (page - 1) * limit;
-
-  const res = await fetch(
-    `https://realworld.habsida.net/api/articles?limit=${limit}&offset=${offset}`,
-  );
-
-  if (!res.ok) {
-    throw Error("Couldn't fetch the articles");
-  }
-  return res.json();
-};
