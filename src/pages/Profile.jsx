@@ -1,8 +1,30 @@
 import defaultAvatar from "../assets/woImage.png";
 import heartImg from "../assets/favorite-alt-green.svg";
+import ArticleCard from "../components/ArticleCard";
+import { useEffect, useState } from "react";
+import { useSearchParams, Link } from "react-router-dom";
+import { getArticles } from "../services/articleServices";
 
 function Profile() {
   const user = JSON.parse(localStorage.getItem("user"));
+  const [articles, setArticles] = useState({ articles: [], articlesCount: 0 });
+  const [searchParams] = useSearchParams();
+
+  const currentPage = parseInt(searchParams.get("page") || "1");
+  const limit = 10;
+  const totalPages = Math.ceil(articles.articlesCount / limit);
+
+  useEffect(() => {
+    const fetchUserArticles = async () => {
+      try {
+        const data = await getArticles({ author: "bipin" });
+        setArticles(data);
+      } catch (error) {
+        throw Error("Couldn't get articles by author. Error:", error);
+      }
+    };
+    fetchUserArticles();
+  }, [user?.username]);
 
   return (
     <div className="profile">
@@ -23,7 +45,42 @@ function Profile() {
         </button>
       </div>
       <div className="profile-body">
-        <div className="profile-body-upper"></div>
+        {articles.articles.map((article) => (
+          <ArticleCard key={article.slug} article={article} />
+        ))}
+      </div>
+      <div className="pagination">
+        {currentPage > 1 && (
+          <Link to={`?page=${currentPage - 1}`} className="previous">
+            Previous
+          </Link>
+        )}
+
+        {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
+          let pageNum;
+          if (currentPage <= 5) {
+            pageNum = i + 1;
+          } else if (currentPage >= totalPages - 2) {
+            pageNum = totalPages - 6 + i;
+          } else {
+            pageNum = currentPage - 3 + i;
+          }
+
+          return (
+            <Link
+              key={pageNum}
+              to={`?page=${pageNum}`}
+              className={`pages ${currentPage === pageNum ? "active" : ""}`}
+            >
+              {pageNum}
+            </Link>
+          );
+        })}
+        {currentPage < totalPages && (
+          <Link to={`?page=${currentPage + 1}`} className="next">
+            Next
+          </Link>
+        )}
       </div>
     </div>
   );

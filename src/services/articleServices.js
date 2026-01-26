@@ -1,8 +1,9 @@
-export const getArticles = async ({ limit = 10, offset = 0 } = {}) => {
+export const getArticles = async ({ limit = 10, offset = 0, author } = {}) => {
   let apiURL = `https://realworld.habsida.net/api/articles?limit=${limit}&offset=${offset}`;
-
+  if (author) {
+    apiURL += `&author=${encodeURIComponent(author)}`;
+  }
   const res = await fetch(apiURL);
-
   if (!res.ok) {
     throw Error("Couldn't fetch the articles");
   }

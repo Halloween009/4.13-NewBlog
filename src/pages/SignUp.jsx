@@ -51,7 +51,7 @@ function SignUp() {
       <Form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="email"
+          name="username"
           placeholder="Username"
           value={username}
           onChange={(e) => setUser(e.target.value)}

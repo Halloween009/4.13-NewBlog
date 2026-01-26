@@ -44,3 +44,18 @@ export async function loginUser(email, password) {
   }
   return res.json();
 }
+
+export async function updateUser(data, token) {
+  const res = await fetch("https://realworld.habsida.net/api/user", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
+    },
+    body: JSON.stringify({ user: data }),
+  });
+  if (!res.ok) {
+    throw Error("Failed to update user data.");
+  }
+  return res.json();
+}

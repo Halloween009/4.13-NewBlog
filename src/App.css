@@ -210,17 +210,31 @@ form {
   width: fit-content;
 }
 form input {
-  width: 456px;
+  width: 430px;
   height: 24px;
   margin: 10px;
   border-radius: 8px;
-  padding: 24px;
+  padding: 11px 24px;
   font-size: 16px;
   border: 1px solid var(--grey);
   outline: none;
+  font-size: 16px;
 }
+
 form input:focus {
   border: 2px solid var(--green);
+}
+form .comment-text {
+  width: 430px;
+  padding: 0px;
+  border-radius: 8px;
+  height: 74px;
+  padding: 12px 24px;
+}
+textarea::placeholder,
+input::placeholder {
+  font-family: "Titillium Web", sans-serif;
+  font-size: 16px;
 }
 form button {
   background: var(--green);
@@ -255,16 +269,18 @@ form button {
 /* profile part*/
 .profile {
   display: flex;
-  background: var(--black);
-  color: var(--primary);
-  height: 348px;
+  flex-direction: column;
 }
 .profile-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+  margin: 0;
+  height: 348px;
+  width: 100%;
+  background: var(--black);
+  color: var(--primary);
 }
 .profile-header .author-img {
   height: 132px;

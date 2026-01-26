@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import penIcon from "../assets/pen.svg";
 import settingsIcon from "../assets/settings.svg";
@@ -20,7 +19,7 @@ function RootLayout() {
                 <img src={penIcon} alt="new-post" />
                 New Post
               </NavLink>
-              <NavLink to="/">
+              <NavLink to="/settings">
                 <img src={settingsIcon} alt="settings" />
                 Settings
               </NavLink>
@@ -38,7 +37,7 @@ function RootLayout() {
                 <img src={penIcon} alt="new-post" />
                 New Post
               </NavLink>
-              <NavLink to="sign-up/">
+              <NavLink to="/sign-in">
                 <img src={settingsIcon} alt="settings" />
                 Settings
               </NavLink>

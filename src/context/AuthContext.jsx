@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from "react";
+import { updateUser } from "../services/authServices";
 
 const AuthContext = createContext();
 
@@ -39,12 +40,18 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
     setUser(null);
   };
+  const update = async (data) => {
+    const token = localStorage.getItem("token");
+    const res = await updateUser(data, token);
+    setUser(res.user);
+    localStorage.setItem("user", JSON.stringify(res.user));
+    return res.user;
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, update }}>
       {children}
     </AuthContext.Provider>
   );
 }
-
 export const useAuth = () => useContext(AuthContext);
