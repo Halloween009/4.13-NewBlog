@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://halloween009.github.io/4.13-NewBlog/",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
