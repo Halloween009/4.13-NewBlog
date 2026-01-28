@@ -70,9 +70,9 @@ h3 {
   border: 1px solid var(--grey);
   border-radius: 8px;
   margin: 2px 3px 2px 3px;
-  padding: 0 3px;
+  padding: 4px 12px;
   color: var(--grey);
-  font-size: 12px;
+  font-size: 13px;
 }
 .tag-list {
   display: flex;
@@ -120,11 +120,24 @@ h4 {
   margin: 20px;
   align-items: center;
 }
+.likeBtn:focus,
+.likeBtn:active {
+  outline: none;
+  box-shadow: none;
+}
 .likeBtn:hover {
-  background-color: plum;
+  border-color: var(--grey);
 }
 .likeBtn .heart {
   margin-right: 5px;
+  height: 12px;
+}
+.liked {
+  border-color: var(--error);
+}
+.article-details-likeBtn {
+  color: var(--primary);
+  background: var(--green);
 }
 .article-profile {
   display: flex;
@@ -167,9 +180,14 @@ h4 {
   max-width: 700px;
   margin: 0 auto;
   text-align: left;
+  padding: 0;
 }
 .article-details-header-box {
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 .article-author {
   display: flex;
@@ -194,6 +212,25 @@ h4 {
 }
 .article-details-body-box {
   margin: 0 25%;
+}
+.btn-container {
+  margin: 5px;
+}
+.deleteBtn,
+.editBtn {
+  background: var(--primary);
+  margin: 2px;
+}
+.deleteBtn {
+  color: var(--error);
+  border: 2px solid var(--error);
+}
+.editBtn {
+  color: var(--green);
+  border: 2px solid var(--green);
+}
+.liked-details {
+  background: var(--error);
 }
 
 /* sign in part*/
@@ -224,13 +261,40 @@ form input {
 form input:focus {
   border: 2px solid var(--green);
 }
-form .comment-text {
+form .comment-text,
+.main-text {
   width: 430px;
   padding: 0px;
   border-radius: 8px;
   height: 74px;
   padding: 12px 24px;
+  resize: none;
 }
+
+form form label {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  width: 480px;
+  margin: 20px;
+}
+form label input {
+  width: 320px;
+  margin: 10px 10px 10px 0;
+}
+form label .add-tagBtn {
+  margin: 0px;
+  height: 48px;
+  width: 100px;
+  line-height: 1;
+  background: var(--primary);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+form .publishBtn {
+  margin-top: 10px;
+}
+
 textarea::placeholder,
 input::placeholder {
   font-family: "Titillium Web", sans-serif;
@@ -241,6 +305,70 @@ form button {
   color: var(--primary);
   align-self: flex-end;
   margin-right: 10px;
+}
+
+/* new articles part*/
+.create-tagList {
+  color: var(--black);
+  background: var(--primary);
+  margin-left: 7px;
+  align-self: flex-start;
+  display: flex;
+}
+.tag-edit {
+  display: flex;
+  align-items: center;
+}
+.create-tagList .close-img {
+  width: 10px;
+  margin-left: 5px;
+}
+
+/* modal part */
+.modal-bg {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-container h4 {
+  font-size: 20px;
+}
+.modal-container {
+  width: 150px;
+  height: 150px;
+  color: var(--black);
+  border-radius: 10px;
+  background: var(--primary);
+  position: relative;
+  box-shadow: 0 4px 24px var(--black);
+  transform: translateY(-15%);
+  padding: 20px;
+}
+.modal-yes-btn,
+.modal-no-btn {
+  margin: 5px;
+  background-color: var(--primary);
+}
+.modal-yes-btn {
+  border: 2px solid var(--green);
+}
+.modal-no-btn {
+  border: 2px solid var(--error);
+}
+.modal-container::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -20px; /* смещение вниз от контейнера */
+  transform: translateX(-230%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 20px solid white; /* цвет стрелки = цвет облачка */
 }
 
 /* sign up part*/

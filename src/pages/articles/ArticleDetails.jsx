@@ -1,13 +1,23 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getArcticle } from "../../services/articleServices";
 import { useState, useEffect } from "react";
 import Markdown from "react-markdown";
 import defaultAvatar from "../../assets/woImage.png";
+import { deleteArticle } from "../../services/authServices";
+import { useAuth } from "../../context/AuthContext";
+import Modal from "../../components/modal/Modal";
+import likeCount from "../../utils/likeCount";
 
 function ArticleDetails() {
   const { slug } = useParams();
   const [article, setArticle] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [openModal, setOpenModal] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [favoritesCount, setFavoritesCount] = useState(article.favoritesCount);
 
   useEffect(() => {
     const fetchArticleData = async () => {
@@ -26,6 +36,24 @@ function ArticleDetails() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  const handleDelete = async () => {
+    setError("");
+    const token = localStorage.getItem("token");
+    await deleteArticle(article.slug, token);
+    navigate("/");
+  };
+
+  const handleEdit = (e) => {
+    e.preventDefault();
+    navigate(`/${article.slug}/edit`);
+  };
+
+  const handleLike = async () => {
+    const result = likeCount(isLiked, favoritesCount);
+    setIsLiked(result.isLiked);
+    setFavoritesCount(result.favoritesCount);
+  };
 
   return (
     <div className="article-details">
@@ -54,6 +82,27 @@ function ArticleDetails() {
             </div>
           </div>
         </div>
+        <div className="btn-container">
+          {user && user.username === article.author.username && (
+            <>
+              {error && <p>{error}</p>}
+              <button
+                className="deleteBtn"
+                onClick={() => {
+                  setOpenModal(true);
+                }}
+              >
+                Delete post
+              </button>
+              <button className="editBtn" onClick={handleEdit}>
+                Edit post
+              </button>
+            </>
+          )}
+        </div>
+        {openModal && (
+          <Modal closeModal={setOpenModal} deleteArticle={handleDelete} />
+        )}
       </div>
       <div className="article-details-body">
         <div className="article-details-body-box">
@@ -67,6 +116,20 @@ function ArticleDetails() {
               </span>
             ))}
           </div>
+        </div>
+        <div className="article-details-like">
+          {isLiked ? (
+            <button
+              className="article-details-likeBtn liked-details"
+              onClick={handleLike}
+            >
+              Unfavorite Article
+            </button>
+          ) : (
+            <button className="article-details-likeBtn" onClick={handleLike}>
+              Favorite Article
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -1,8 +1,19 @@
 import { Link } from "react-router-dom";
 import defaultAvatar from "../assets/woImage.png";
 import heartIcon from "../assets/favorite.svg";
+import heartIconRed from "../assets/favorite-red.svg";
+import { useState } from "react";
+import likeCount from "../utils/likeCount";
 
 function ArticleCard({ article }) {
+  const [isLiked, setIsLiked] = useState(false);
+  const [favoritesCount, setFavoritesCount] = useState(article.favoritesCount);
+
+  const handleLike = async () => {
+    const result = likeCount(isLiked, favoritesCount);
+    setIsLiked(result.isLiked);
+    setFavoritesCount(result.favoritesCount);
+  };
   return (
     <div className="article" key={article.slug}>
       <div className="article-header">
@@ -27,10 +38,17 @@ function ArticleCard({ article }) {
             </p>
           </div>
         </div>
-        <button className="likeBtn">
-          <img src={heartIcon} alt="heart-icon" className="heart" />
-          {article.favoritesCount}
-        </button>
+        {isLiked ? (
+          <button className="likeBtn liked" onClick={handleLike}>
+            <img src={heartIconRed} alt="heart-icon" className="heart" />
+            {favoritesCount}
+          </button>
+        ) : (
+          <button className="likeBtn" onClick={handleLike}>
+            <img src={heartIcon} alt="heart-icon" className="heart" />
+            {favoritesCount}
+          </button>
+        )}
       </div>
       <div className="article-root">
         <div className="article-main">

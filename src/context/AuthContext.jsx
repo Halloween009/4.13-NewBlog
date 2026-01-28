@@ -1,11 +1,18 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from "react";
-import { updateUser } from "../services/authServices";
+import {
+  deleteArticle,
+  editArticle,
+  updateUser,
+} from "../services/authServices";
+import { createArticle } from "../services/authServices";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
+
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("token");
@@ -19,6 +26,7 @@ export function AuthProvider({ children }) {
           if (res.ok) {
             const data = await res.json();
             setUser(data.user);
+            setIsAuthChecked(true);
           } else {
             localStorage.removeItem("token");
           }
@@ -47,9 +55,35 @@ export function AuthProvider({ children }) {
     localStorage.setItem("user", JSON.stringify(res.user));
     return res.user;
   };
+  const create = async (data) => {
+    const token = localStorage.getItem("token");
+    const res = await createArticle(data, token);
+    return res.article || res;
+  };
+  const deleteArt = async (slug) => {
+    const token = localStorage.getItem("token");
+    await deleteArticle(slug, token);
+    return true;
+  };
+  const edit = async (slug) => {
+    const token = localStorage.getItem("token");
+    const res = await editArticle(slug, token);
+    return res.article;
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, update }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        update,
+        create,
+        deleteArt,
+        edit,
+        isAuthChecked,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

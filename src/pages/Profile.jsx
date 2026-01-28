@@ -17,7 +17,7 @@ function Profile() {
   useEffect(() => {
     const fetchUserArticles = async () => {
       try {
-        const data = await getArticles({ author: "bipin" });
+        const data = await getArticles({ author: user?.username });
         setArticles(data);
       } catch (error) {
         throw Error("Couldn't get articles by author. Error:", error);

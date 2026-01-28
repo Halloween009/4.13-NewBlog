@@ -1,5 +1,5 @@
 import { Form } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 function Settings() {
@@ -9,16 +9,6 @@ function Settings() {
   const [email, setEmail] = useState(user?.email || "");
   const [image, setImage] = useState(user?.image || "");
 
-  useEffect(() => {
-    if (user) {
-      setUsername(user.username || "");
-      setEmail(user.email || "");
-      setImage(user.image || "");
-      console.log("user from API2:", user);
-    }
-  }, [user]);
-
-  if (!user) return <div>Loading...</div>;
   const handleUpdate = async (e) => {
     e.preventDefault();
     setError("");
@@ -30,14 +20,12 @@ function Settings() {
     };
 
     try {
-      console.log({ username, email, image });
       await update(data);
     } catch (error) {
       setError("Couldn't update user data.");
       console.error("Couldn't update user data.", error);
     }
   };
-  if (!user) return <div>Loading...</div>;
 
   return (
     <div className="settings">

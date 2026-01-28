@@ -1,11 +1,21 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation, Navigate } from "react-router-dom";
 import penIcon from "../assets/pen.svg";
 import settingsIcon from "../assets/settings.svg";
 import profileIcon from "../assets/profile.svg";
 import { useAuth } from "../context/AuthContext";
 
 function RootLayout() {
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthChecked } = useAuth();
+  const location = useLocation();
+
+  const publicPath = ["/", "/sign-up", "/sign-in"];
+  const isPublic = publicPath.includes(location.pathname);
+  if (!isAuthChecked) {
+    return null;
+  }
+  if (!user && !isPublic) {
+    return <Navigate to="/sign-up" replace />;
+  }
 
   return (
     <div className="root-layout">
@@ -15,7 +25,7 @@ function RootLayout() {
           <NavLink to="/">Home</NavLink>
           {user ? (
             <>
-              <NavLink to="/">
+              <NavLink to="/new-post">
                 <img src={penIcon} alt="new-post" />
                 New Post
               </NavLink>
