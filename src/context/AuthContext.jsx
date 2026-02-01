@@ -13,29 +13,61 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
 
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     const token = localStorage.getItem("token");
+  //     if (token) {
+  //       try {
+  //         const res = await fetch("https://realworld.habsida.net/api/user", {
+  //           headers: {
+  //             Authorization: `Token ${token}`,
+  //           },
+  //         });
+  //         if (res.ok) {
+  //           const data = await res.json();
+  //           setUser(data.user);
+  //           setIsAuthChecked(true);
+  //         } else {
+  //           localStorage.removeItem("token");
+  //         }
+  //       } catch (error) {
+  //         console.error("Auth check failed:", error);
+  //         localStorage.removeItem("token");
+  //       }
+  //     }
+  //   };
+  //   checkAuth();
+  // }, []);
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          const res = await fetch("https://realworld.habsida.net/api/user", {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setUser(data.user);
-            setIsAuthChecked(true);
-          } else {
-            localStorage.removeItem("token");
-          }
-        } catch (error) {
-          console.error("Auth check failed:", error);
+
+      if (!token) {
+        setIsAuthChecked(true);
+        return;
+      }
+
+      try {
+        const res = await fetch("https://realworld.habsida.net/api/user", {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+        } else {
           localStorage.removeItem("token");
         }
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        localStorage.removeItem("token");
+      } finally {
+        setIsAuthChecked(true);
       }
     };
+
     checkAuth();
   }, []);
 
