@@ -4,12 +4,17 @@ import heartIcon from "../assets/favorite.svg";
 import heartIconRed from "../assets/favorite-red.svg";
 import { useState } from "react";
 import likeCount from "../utils/likeCount";
+import { useAuth } from "../context/AuthContext";
 
 function ArticleCard({ article }) {
+  const { user } = useAuth();
   const [isLiked, setIsLiked] = useState(false);
   const [favoritesCount, setFavoritesCount] = useState(article.favoritesCount);
 
   const handleLike = async () => {
+    if (!user) {
+      return;
+    }
     const result = likeCount(isLiked, favoritesCount);
     setIsLiked(result.isLiked);
     setFavoritesCount(result.favoritesCount);

@@ -50,6 +50,9 @@ function ArticleDetails() {
   };
 
   const handleLike = async () => {
+    if (!user) {
+      return;
+    }
     const result = likeCount(isLiked, favoritesCount);
     setIsLiked(result.isLiked);
     setFavoritesCount(result.favoritesCount);

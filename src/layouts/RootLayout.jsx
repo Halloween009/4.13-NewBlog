@@ -8,12 +8,13 @@ function RootLayout() {
   const { user, logout, isAuthChecked } = useAuth();
   const location = useLocation();
 
-  const publicPath = ["/", "/sign-up", "/sign-in"];
-  const isPublic = publicPath.includes(location.pathname);
+  const privatePaths = ["/settings", "/profile", "/new-post"];
+  const isPrivate = privatePaths.includes(location.pathname);
+
   if (!isAuthChecked) {
     return null;
   }
-  if (!user && !isPublic) {
+  if (!user && isPrivate) {
     return <Navigate to="/sign-up" replace />;
   }
 
